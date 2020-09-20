@@ -1,17 +1,44 @@
-import Crypto
-from Crypto.PublicKey import RSA
-from Crypto.Cipher import PKCS1_OAEP
+import hashlib
+import os
+from Crypto.Cipher import AES
+from cryptography.fernet import Fernet
 
-random_generator = Crypto.Random.new().read
-private_key = RSA.generate(1024, random_generator)
-cipher_rsa = PKCS1_OAEP.new(private_key)
+####AES#####
 
-texto = "hola mundo"
-enc_data = cipher_rsa.encrypt(texto.encode(encoding='utf-8'))
+IV_SIZE = 16    # 128 bit, fixed for the AES algorithm
+KEY_SIZE = 32   # 256 bit meaning AES-256, can also be 128 or 192 bits
+SALT_SIZE = 16  # This size is arbitrary
+
+cleartext = "Hola mundo"
+password = b'highly secure encryption password'
+salt = os.urandom(SALT_SIZE)
+derived = hashlib.pbkdf2_hmac('sha256', password, salt, 100000, dklen=IV_SIZE + KEY_SIZE)
+iv = derived[0:IV_SIZE]
+key = derived[IV_SIZE:]
+
+encrypted = salt + AES.new(key, AES.MODE_CFB, iv).encrypt(cleartext.encode('utf-8'))
+print(encrypted)
+
+cleartext = AES.new(key, AES.MODE_CFB, iv).decrypt(encrypted[SALT_SIZE:])
+print(cleartext.decode())
+
+
+###FERNET####
+
+texto = "Hola mundo"
+key = Fernet.generate_key()  # Keep this secret!
+#print(type(key))  # bytes
+print("LLave:")
+print(key)  # base64 encoded 32 bytes}
+print("")
+my_fernet = Fernet(key)
+encrypted_bytes = my_fernet.encrypt(texto.encode())
 print("Encriptado:")
-print(enc_data)
+print(encrypted_bytes)
 print("")
 
-dec_data = cipher_rsa.decrypt(enc_data)
+# Decrypt
+clear_text = my_fernet.decrypt(encrypted_bytes)
 print("Desencriptado:")
-print(dec_data.decode())
+print(clear_text.decode())
+print("")
