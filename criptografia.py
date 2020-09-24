@@ -1,32 +1,50 @@
 import hashlib
 import os
-from Crypto.Random import random
 from Crypto.Cipher import AES
 
-
+# Definición del tamaño del vector de inicialización, tamaño de la llave y tamaño de la sal
 IV_SIZE = 16    # 128 bit, fixed for the AES algorithm
 KEY_SIZE = 32   # 256 bit meaning AES-256, can also be 128 or 192 bits
 SALT_SIZE = 16  # This size is arbitrary
 
-cleartext = "Hola mundo"
-text2= "Holamundo"
-password = b'clave super mega dificil pasaremos sisteco'
-#password = key = ''.join(chr(random.randint(0, 0xFF)) for i in range(16))
+# Textos para encriptar y probar efecto avalancha
+text_1 = "Hola mundo"
+text_2 = "Holamundo"
+text_3 = "Hola mudo"
+
+# Clave para el cifrado simétrico AES
+password = "clave mega supercalifragilisticoespialidosa"
+
+# Sal para aumentar la complejidad del ataque de diccionario
 salt = os.urandom(SALT_SIZE)
-derived = hashlib.pbkdf2_hmac('sha256', password, salt, 100000, dklen=IV_SIZE + KEY_SIZE)
+print("Salto:")
+print(salt.hex())
+print("")
+
+# Obtención de la llave y vector de inicialización (iv)
+derived = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000, dklen=IV_SIZE + KEY_SIZE)
 iv = derived[0:IV_SIZE]
 key = derived[IV_SIZE:]
 
-encrypted = salt + AES.new(key, AES.MODE_CFB, iv).encrypt(cleartext.encode('utf-8'))
-print("Encriptado 1:")
-print(encrypted)
+# Encriptación del texto 1
+text_1_encrypted = salt + AES.new(key, AES.MODE_CFB, iv).encrypt(text_1.encode('utf-8'))
+print("Texto 1 encriptado:")
+print(text_1_encrypted.hex())
 print("")
 
-encriptado2 = salt + AES.new(key, AES.MODE_CFB, iv).encrypt(text2.encode('utf-8'))
-print("Encriptado 2:")
-print(encriptado2)
+# Encriptación del texto 2
+text_2_encrypted = salt + AES.new(key, AES.MODE_CFB, iv).encrypt(text_2.encode('utf-8'))
+print("Texto 2 encriptado:")
+print(text_2_encrypted.hex())
 print("")
 
-cleartext = AES.new(key, AES.MODE_CFB, iv).decrypt(encrypted[SALT_SIZE:])
-print("Desencriptado 1:")
-print(cleartext.decode())
+# Encriptación del texto 3
+text_3_encrypted = salt + AES.new(key, AES.MODE_CFB, iv).encrypt(text_3.encode('utf-8'))
+print("Texto 3 encriptado:")
+print(text_3_encrypted.hex())
+print("")
+
+# Desencriptación del texto 1
+text_1_decrypted = AES.new(key, AES.MODE_CFB, iv).decrypt(text_1_encrypted[SALT_SIZE:])
+print("Texto 1 desencriptado:")
+print(text_1_decrypted.decode())
