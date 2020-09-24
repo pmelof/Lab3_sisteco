@@ -3,9 +3,9 @@ import os
 from Crypto.Cipher import AES
 
 # Definición del tamaño del vector de inicialización, tamaño de la llave y tamaño de la sal
-IV_SIZE = 16    # 128 bit, fixed for the AES algorithm
-KEY_SIZE = 32   # 256 bit meaning AES-256, can also be 128 or 192 bits
-SALT_SIZE = 16  # This size is arbitrary
+IV_SIZE = 16    # 128 bits
+KEY_SIZE = 32   # Tamaño llave: 256 bits (AES-256), puede ser también de 128 bits o de 192 bits
+SALT_SIZE = 16  # Tamaño arbitrario de sal
 
 # Textos para encriptar y probar efecto avalancha
 text_1 = "Hola mundo"
