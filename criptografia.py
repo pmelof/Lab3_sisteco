@@ -1,50 +1,73 @@
 import hashlib
 import os
 from Crypto.Cipher import AES
+from time import time
 
 # Definición del tamaño del vector de inicialización, tamaño de la llave y tamaño de la sal
-IV_SIZE = 16    # Tamaño bloque: 128 bits
+
+IV_SIZE = 16    # Tamaño IV 128 bits
 KEY_SIZE = 32   # Tamaño llave: 256 bits (AES-256), puede ser también de 128 bits o de 192 bits
 SALT_SIZE = 16  # Tamaño arbitrario de sal
 
-# Textos para encriptar y probar efecto avalancha
-text_1 = "Hola mundo"
-text_2 = "Holamundo"
-text_3 = "Hola mudo"
 
-# Clave para el cifrado simétrico AES
-password = "clave mega supercalifragilisticoespialidosa"
+# Funcion de encriptación
+def encryp(password, text):
+    start_time = time()
 
-# Sal para aumentar la complejidad del ataque de diccionario
-salt = os.urandom(SALT_SIZE)
-print("Salto:")
-print(salt.hex())
-print("")
+    # Sal para aumentar la complejidad del ataque de diccionario
+    salt = os.urandom(SALT_SIZE)
 
-# Obtención de la llave y vector de inicialización (iv)
-derived = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000, dklen=IV_SIZE + KEY_SIZE)
-iv = derived[0:IV_SIZE]
-key = derived[IV_SIZE:]
+    # Obtención de la llave y vector de inicialización (iv) a partir de la contraseña
+    derived = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000, dklen=IV_SIZE + KEY_SIZE)
+    iv = derived[0:IV_SIZE]
+    key = derived[IV_SIZE:]
 
-# Encriptación del texto 1
-text_1_encrypted = salt + AES.new(key, AES.MODE_CFB, iv).encrypt(text_1.encode('utf-8'))
-print("Texto 1 encriptado:")
-print(text_1_encrypted.hex())
-print("")
+    # Encriptación del texto
+    encrypted_text = salt + AES.new(key, AES.MODE_CFB, iv).encrypt(text.encode('utf-8'))
 
-# Encriptación del texto 2
-text_2_encrypted = salt + AES.new(key, AES.MODE_CFB, iv).encrypt(text_2.encode('utf-8'))
-print("Texto 2 encriptado:")
-print(text_2_encrypted.hex())
-print("")
+    end_time = time() - start_time
 
-# Encriptación del texto 3
-text_3_encrypted = salt + AES.new(key, AES.MODE_CFB, iv).encrypt(text_3.encode('utf-8'))
-print("Texto 3 encriptado:")
-print(text_3_encrypted.hex())
-print("")
+    print("Texto encriptado:")
+    print(encrypted_text.hex())
+    print("\nTiempo: ", end_time)
+    print("")
 
-# Desencriptación del texto 1
-text_1_decrypted = AES.new(key, AES.MODE_CFB, iv).decrypt(text_1_encrypted[SALT_SIZE:])
-print("Texto 1 desencriptado:")
-print(text_1_decrypted.decode())
+    # Retorno del texto encriptado
+    return encrypted_text
+
+
+def decrypt(password, encrypted_text):
+    # Obtención de la sal del texto encriptado
+    salt = encrypted_text[0:SALT_SIZE]
+
+    # Obtención de la llave y vector de inicialización (iv) a partir de la contraseña
+    derived = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000, dklen=IV_SIZE + KEY_SIZE)
+    iv = derived[0:IV_SIZE]
+    key = derived[IV_SIZE:]
+
+    # Desencriptación del texto cifrado
+    decrypted_text = AES.new(key, AES.MODE_CFB, iv).decrypt(encrypted_text[SALT_SIZE:])
+    print("Texto desencriptado:")
+    print(decrypted_text.decode())
+    print("")
+
+
+if __name__ == '__main__':
+    # Clave para el cifrador simétrico AES
+    password = "clave mega supercalifragilisticoespialidosa"
+
+    # Textos para encriptar y probar efecto avalancha
+    text_1 = "Hola mundo"
+    text_2 = "Holamundo"
+    text_3 = "Hola mudo"
+
+    encrypted_text_1 = encryp(password, text_1)
+    encrypted_text_2 = encryp(password, text_2)
+    encrypted_text_3 = encryp(password, text_3)
+
+    decrypt(password, encrypted_text_1)
+    decrypt(password, encrypted_text_2)
+    decrypt(password, encrypted_text_3)
+
+
+
