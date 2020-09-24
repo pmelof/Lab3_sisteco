@@ -1,10 +1,10 @@
 import hashlib
 import os
+import sys
 from Crypto.Cipher import AES
 from time import time
 
 # Definición del tamaño del vector de inicialización, tamaño de la llave y tamaño de la sal
-
 IV_SIZE = 16    # Tamaño IV 128 bits
 KEY_SIZE = 32   # Tamaño llave: 256 bits (AES-256), puede ser también de 128 bits o de 192 bits
 SALT_SIZE = 16  # Tamaño arbitrario de sal
@@ -12,6 +12,7 @@ SALT_SIZE = 16  # Tamaño arbitrario de sal
 
 # Funcion de encriptación
 def encryp(password, text):
+    # Tiempo inicio
     start_time = time()
 
     # Sal para aumentar la complejidad del ataque de diccionario
@@ -25,18 +26,23 @@ def encryp(password, text):
     # Encriptación del texto
     encrypted_text = salt + AES.new(key, AES.MODE_CFB, iv).encrypt(text.encode('utf-8'))
 
+    # Tiempo fin
     end_time = time() - start_time
 
     print("Texto encriptado:")
     print(encrypted_text.hex())
-    print("\nTiempo: ", end_time)
+    print("Tiempo: ", end_time)
     print("")
 
     # Retorno del texto encriptado
     return encrypted_text
 
 
+# Función de desencriptación
 def decrypt(password, encrypted_text):
+    # Tiempo inicio
+    start_time = time()
+
     # Obtención de la sal del texto encriptado
     salt = encrypted_text[0:SALT_SIZE]
 
@@ -47,8 +53,13 @@ def decrypt(password, encrypted_text):
 
     # Desencriptación del texto cifrado
     decrypted_text = AES.new(key, AES.MODE_CFB, iv).decrypt(encrypted_text[SALT_SIZE:])
+
+    # Tiempo fin
+    end_time = time() - start_time
+
     print("Texto desencriptado:")
     print(decrypted_text.decode())
+    print("Tiempo: ", end_time)
     print("")
 
 
@@ -60,14 +71,20 @@ if __name__ == '__main__':
     text_1 = "Hola mundo"
     text_2 = "Holamundo"
     text_3 = "Hola mudo"
+    text_4 = "Por eso mi madre y Prim"
+    text_5 = "Por eso mi madre y Prim, con su cabello rubio y sus ojos azules"
 
     encrypted_text_1 = encryp(password, text_1)
     encrypted_text_2 = encryp(password, text_2)
     encrypted_text_3 = encryp(password, text_3)
+    encrypted_text_4 = encryp(password, text_4)
+    encrypted_text_5 = encryp(password, text_5)
 
     decrypt(password, encrypted_text_1)
     decrypt(password, encrypted_text_2)
     decrypt(password, encrypted_text_3)
+    decrypt(password, encrypted_text_4)
+    decrypt(password, encrypted_text_5)
 
 
 
