@@ -1,15 +1,26 @@
+# Autores:
+# Williams Álvarez
+# Patricia Melo
+
+
+# ------------ LIBRERÍAS A UTILIZAR ------------
 import hashlib
 import os
 from Crypto.Cipher import AES
 from time import time
 
+
+# ------------- VARIABLES GLOBALES -------------
 # Definición del tamaño del vector de inicialización, tamaño de la llave y tamaño de la sal
 IV_SIZE = 16    # Tamaño IV 128 bits
 KEY_SIZE = 32   # Tamaño llave: 256 bits (AES-256), puede ser también de 128 bits o de 192 bits
 SALT_SIZE = 16  # Tamaño arbitrario de sal
 
 
-# Funcion de encriptación
+# ----------------- FUNCIONES ------------------
+# Funcion de encriptación.
+# Recibe una contraseña y el texto a cifrar.
+# Retorna el texto cifrado.
 def encryp(password, text):
     print("-----------------------------------------------------------")
     # Tiempo inicio
@@ -38,7 +49,9 @@ def encryp(password, text):
     return encrypted_text
 
 
-# Función de desencriptación
+# Función de desencriptación.
+# Recibe la contraseña y el texto encriptado.
+# No tiene variable de retorno.
 def decrypt(password, encrypted_text):
     # Tiempo inicio
     start_time = time()
@@ -63,6 +76,8 @@ def decrypt(password, encrypted_text):
     print("-----------------------------------------------------------")
 
 
+
+# ------------------------ BLOQUE PRINCIPAL ------------------------
 # Función main
 if __name__ == '__main__':
     # Clave para el cifrador simétrico AES
