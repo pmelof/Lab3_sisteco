@@ -19,8 +19,8 @@ SALT_SIZE = 16  # Tamaño arbitrario de sal
 
 # ----------------- FUNCIONES ------------------
 # Funcion de encriptación.
-# Recibe una contraseña y el texto a cifrar.
-# Retorna el texto cifrado.
+# Entrada: Recibe una contraseña y el texto a cifrar.
+# Salida: Retorna el texto cifrado.
 def encryp(password, text):
     print("-----------------------------------------------------------")
     # Tiempo inicio
@@ -50,8 +50,8 @@ def encryp(password, text):
 
 
 # Función de desencriptación.
-# Recibe la contraseña y el texto encriptado.
-# No tiene variable de retorno.
+# Entrada: Recibe la contraseña y el texto encriptado.
+# Salida: No tiene variable de retorno.
 def decrypt(password, encrypted_text):
     # Tiempo inicio
     start_time = time()
@@ -74,7 +74,6 @@ def decrypt(password, encrypted_text):
     print(decrypted_text.decode())
     print("Tiempo: ", end_time, "segundos")
     print("-----------------------------------------------------------")
-
 
 
 # ------------------------ BLOQUE PRINCIPAL ------------------------
