@@ -1,6 +1,5 @@
 import hashlib
 import os
-import sys
 from Crypto.Cipher import AES
 from time import time
 
@@ -12,6 +11,7 @@ SALT_SIZE = 16  # Tamaño arbitrario de sal
 
 # Funcion de encriptación
 def encryp(password, text):
+    print("-----------------------------------------------------------")
     # Tiempo inicio
     start_time = time()
 
@@ -31,7 +31,7 @@ def encryp(password, text):
 
     print("Texto encriptado:")
     print(encrypted_text.hex())
-    print("Tiempo: ", end_time)
+    print("Tiempo: ", end_time, "segundos")
     print("")
 
     # Retorno del texto encriptado
@@ -59,10 +59,11 @@ def decrypt(password, encrypted_text):
 
     print("Texto desencriptado:")
     print(decrypted_text.decode())
-    print("Tiempo: ", end_time)
-    print("")
+    print("Tiempo: ", end_time, "segundos")
+    print("-----------------------------------------------------------")
 
 
+# Función main
 if __name__ == '__main__':
     # Clave para el cifrador simétrico AES
     password = "clave mega supercalifragilisticoespialidosa"
@@ -74,17 +75,22 @@ if __name__ == '__main__':
     text_4 = "Por eso mi madre y Prim"
     text_5 = "Por eso mi madre y Prim, con su cabello rubio y sus ojos azules"
 
+    # Prueba texto 1
     encrypted_text_1 = encryp(password, text_1)
-    encrypted_text_2 = encryp(password, text_2)
-    encrypted_text_3 = encryp(password, text_3)
-    encrypted_text_4 = encryp(password, text_4)
-    encrypted_text_5 = encryp(password, text_5)
-
     decrypt(password, encrypted_text_1)
+
+    # Prueba texto 2
+    encrypted_text_2 = encryp(password, text_2)
     decrypt(password, encrypted_text_2)
+
+    # Prueba texto 3
+    encrypted_text_3 = encryp(password, text_3)
     decrypt(password, encrypted_text_3)
+
+    # Prueba texto 4
+    encrypted_text_4 = encryp(password, text_4)
     decrypt(password, encrypted_text_4)
+
+    # Prueba texto 5
+    encrypted_text_5 = encryp(password, text_5)
     decrypt(password, encrypted_text_5)
-
-
-
